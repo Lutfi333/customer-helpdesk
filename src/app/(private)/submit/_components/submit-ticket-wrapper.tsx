@@ -65,10 +65,10 @@ export default function SubmitTicketWrapper() {
     updatedAt: new Date(),
   });
 
-  const { data: project } = useProjectList({
-    page: 1,
-    limit: 100,
-  });
+  // const { data: project } = useProjectList({
+  //   page: 1,
+  //   limit: 100,
+  // });
 
   const { data: category } = useCategoryList();
 
@@ -190,7 +190,7 @@ export default function SubmitTicketWrapper() {
           <CardBody>
             <form onSubmit={onSubmit} className="mt-4">
               <div className="flex-col space-y-10">
-                <div>
+                {/* <div>
                   <Controller
                     name="project"
                     rules={{
@@ -219,8 +219,8 @@ export default function SubmitTicketWrapper() {
                         )) || []}
                       </Select>
                     )}
-                  />
-                </div>
+                  /> */}
+                {/* </div> */}
                 <div className="mt-2">
                   <Controller
                     name="subject"

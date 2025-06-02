@@ -109,7 +109,7 @@ export default function LeftSidebar() {
             User Management
           </MenuItem>
         )}
-        <MenuItem
+        {/* <MenuItem
           className="rounded-md"
           active={activeMenu("/project-management")}
           icon={<HiOutlineClipboardDocumentList />}
@@ -118,7 +118,7 @@ export default function LeftSidebar() {
           }}
         >
           Project Manajement
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </Sidebar>
   );

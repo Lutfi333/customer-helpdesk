@@ -67,8 +67,8 @@ export default function LoginCard() {
   });
 
   return (
-    (<Card className="w-4/12 rounded-2xl shadow-lg p-5">
-      <CardHeader className="justify-between">
+    (<Card className="w-full max-w-md sm:max-w-lg md:max-w-xl lg:max-w-2xl xl:max-w-3xl mx-auto rounded-2xl shadow-lg p-5">
+      <CardHeader className="justify-center">
         <div className="flex flex-col justify-center items-center w-full">
           <div>
             <p className="text-lg font-bold mt-2">Login</p>
