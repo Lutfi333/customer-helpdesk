@@ -114,35 +114,36 @@ export default function TicketInfo(props: { id: string }) {
   };
 
   const renderStatus = useCallback((status: string) => {
-    let color: "default" | "primary" | "secondary" | "success" | "warning" | "danger" = "default";
-  
+    let color:
+      | "default"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "danger" = "default";
+
     switch (status) {
       case "open":
-        color = "primary";      
+        color = "primary";
         break;
       case "in_progress":
-        color = "secondary";   
+        color = "secondary";
         break;
       case "close":
-        color = "success";      
+        color = "success";
         break;
       case "resolve":
-        color = "warning";      
+        color = "warning";
         break;
       case "cancel":
-        color = "danger";       
+        color = "danger";
         break;
       default:
-        color = "default";     
+        color = "default";
     }
-  
+
     return (
-      <Chip
-        color={color}
-        className="capitalize"
-        size="sm"
-        variant="solid"
-      >
+      <Chip color={color} className="capitalize" size="sm" variant="solid">
         {status.replace("_", " ")}
       </Chip>
     );
@@ -157,27 +158,27 @@ export default function TicketInfo(props: { id: string }) {
 
         <div>
           <p className="text-slate-400 text-xs">Category</p>
-          <p>{detail?.data.category?.name || ""}</p>
+          <p>{detail?.data?.category?.name || ""}</p>
         </div>
 
         <div>
           <p className="text-slate-400 text-xs">Subject</p>
-          <p>{detail?.data.subject}</p>
+          <p>{detail?.data?.subject}</p>
         </div>
 
         <div>
           <p className="text-slate-400 text-xs">Project</p>
-          <p>{detail?.data.project.name}</p>
+          <p>{detail?.data?.project?.name}</p>
         </div>
 
         <div>
           <p className="text-slate-400 text-xs">Description</p>
-          <p>{detail?.data.content}</p>
+          <p>{detail?.data?.content}</p>
         </div>
 
         <div>
           <p className="text-slate-400 text-xs">Ticket-ID</p>
-          <p>{detail?.data.code}</p>
+          <p>{detail?.data?.code}</p>
         </div>
 
         <div>
@@ -193,12 +194,12 @@ export default function TicketInfo(props: { id: string }) {
 
         <div>
           <p className="text-slate-400 text-xs">Requester</p>
-          <p>{detail?.data.customer.name}</p>
+          <p>{detail?.data?.customer.name}</p>
         </div>
 
         <div>
           <p className="text-slate-400 text-xs">Status</p>
-          {renderStatus(detail?.data.status ?? "open")}
+          {renderStatus(detail?.data?.status ?? "open")}
         </div>
 
         <div>
@@ -213,7 +214,7 @@ export default function TicketInfo(props: { id: string }) {
               key={item.id}
               className="w-full flex items-center p-3 gap-2 rounded-md border-[1px] border-slate-200"
             >
-              <p className="w-full text-sm">{item.name}</p>
+              <p className="w-full text-sm">{item?.name}</p>
               <Button
                 onPress={() => {
                   setSelectedAttachment(item.id);

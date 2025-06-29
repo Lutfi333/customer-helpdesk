@@ -18,6 +18,7 @@ import toast from "react-hot-toast";
 import { AiOutlineFileAdd, AiOutlineSend } from "react-icons/ai";
 import { HiArrowUp, HiOutlineArrowCircleLeft, HiTrash } from "react-icons/hi";
 import ImageViewModal from "./image-view-modal";
+import { FaUserCircle } from "react-icons/fa";
 
 type FileList = {
   url: string;
@@ -243,19 +244,25 @@ export default function DetailWrapper(props: { id: string }) {
       <div className="w-full border-[1px] border-slate-400 rounded-md">
         <div className="flex items-center justify-between m-2">
           <div className="flex items-center space-x-2">
-            {/* <p>{company?.data.logo.url}</p> */}
+            <p>{company?.data?.logo?.url}</p>
             <div className="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex items-center justify-center">
-              {!isFetchingCompany && (
-                <Image
-                  src={company?.data.logo.url}
-                  alt="company logo"
-                  height={50}
-                  width={50}
-                  className="w-full h-full object-contain aspect-square"
-                />
+              {!isFetchingCompany ? (
+                company?.data?.logo?.url ? (
+                  <Image
+                    src={company?.data?.logo?.url}
+                    alt="company logo"
+                    height={50}
+                    width={50}
+                    className="w-full h-full object-contain aspect-square"
+                  />
+                ) : (
+                  <FaUserCircle size={40} className="text-slate-500" />
+                )
+              ) : (
+                <Spinner size="sm" />
               )}
             </div>
-            <p>{company?.data.name}</p>
+            <p>{company?.data?.name}</p>
           </div>
         </div>
 
