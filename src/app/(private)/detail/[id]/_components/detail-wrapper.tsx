@@ -18,6 +18,14 @@ import toast from "react-hot-toast";
 import { AiOutlineFileAdd, AiOutlineSend } from "react-icons/ai";
 import { HiArrowUp, HiOutlineArrowCircleLeft, HiTrash } from "react-icons/hi";
 import ImageViewModal from "./image-view-modal";
+import {
+  RiArrowLeftLine,
+  RiAttachment2,
+  RiSendPlane2Line,
+} from "react-icons/ri";
+import dynamic from "next/dynamic";
+import { useForm } from "react-hook-form";
+import { Textarea } from "@heroui/react";
 
 type FileList = {
   url: string;
@@ -33,6 +41,10 @@ export default function DetailWrapper(props: { id: string }) {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [open, setOpen] = useState(false);
+  const EmojiPicker = dynamic(() => import("./emoji-picker"), {
+    ssr: false,
+  });
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [attachment, setAttachment] = useState<Attachment>({
     id: "",
     size: 0,
@@ -70,6 +82,39 @@ export default function DetailWrapper(props: { id: string }) {
     useDetailAttachment(selectedAttachment);
 
   const { mutate: uploadAttachment } = useUploadAttachment();
+  const { setValue, getValues } = useForm<{ comment: string }>();
+
+  const addEmoji = (emoji: any) => {
+    const symbol = emoji.native ?? "";
+    if (!symbol) return;
+
+    const next = inputMessage + symbol;
+
+    setInputMessage(next); // update input visual
+    setValue("comment", next); // update react-hook-form
+    // inputRef.current?.focus(); // balikin fokus
+    setShowEmojiPicker(false); // tutup modal
+  };
+
+  const renderMessage = (message: string) => {
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    return message.split(urlRegex).map((part, index) => {
+      if (urlRegex.test(part)) {
+        return (
+          <a
+            key={index}
+            href={part}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="!text-blue-600 underline hover:!text-blue-800"
+          >
+            {part}
+          </a>
+        );
+      }
+      return <span key={index}>{part}</span>;
+    });
+  };
 
   useEffect(() => {
     var dataComment: ListCommentData[] = comments?.data.list ?? [];
@@ -240,14 +285,14 @@ export default function DetailWrapper(props: { id: string }) {
         <p className="font-semibold text-slate-700">Ticket Detail</p>
       </div>
 
-      <div className="w-full border-[1px] border-slate-400 rounded-md">
+      <div className="w-full rounded-md shadow-xl bg-white">
         <div className="flex items-center justify-between m-2">
           <div className="flex items-center space-x-2">
             {/* <p>{company?.data.logo.url}</p> */}
             <div className="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex items-center justify-center">
               {!isFetchingCompany && (
                 <Image
-                  src={company?.data.logo.url}
+                  // src={company?.data.logo.url}
                   alt="company logo"
                   height={50}
                   width={50}
@@ -255,25 +300,27 @@ export default function DetailWrapper(props: { id: string }) {
                 />
               )}
             </div>
-            <p>{company?.data.name}</p>
+            {/* <p>{company?.data.name}</p> */}
           </div>
         </div>
-
-        <div className="bg-slate-700 relative rounded-md p-2 space-y-2 h-[560px] overflow-auto">
+        <div className="relative rounded-md h-[560px] bg-slate-700 overflow-auto">
+          <div className="flex-1 overflow-auto px-2 pt-2 pb-36"></div>
           {loadingComment ? (
-            <div className="w-full mx-auto flex justify-center items-center">
+            <div className="w-full h-full flex justify-center items-center">
               <Spinner size="sm" />
             </div>
+          ) : comment.length === 0 ? (
+            <div className="w-full h-full flex flex-col justify-center items-center text-white">
+              <p className="font-semibold">
+                You’re starting a new conversation
+              </p>
+              <p className="text-sm">Type your first message below.</p>
+            </div>
           ) : (
-            <>
+            <div className="flex flex-col gap-4 p-2">
               {(comments?.data.totalPage ?? 0) > pagination.page && (
-                <div className="w-full mx-auto flex justify-center items-center">
-                  <Button
-                    onPress={() => {
-                      onLoadMore();
-                    }}
-                    className="bg-white"
-                  >
+                <div className="w-full flex justify-center">
+                  <Button onPress={onLoadMore} className="bg-white">
                     <div className="flex items-center space-x-2">
                       <p className="text-xs text-slate-700">
                         Load More Older Comment
@@ -283,134 +330,137 @@ export default function DetailWrapper(props: { id: string }) {
                   </Button>
                 </div>
               )}
-            </>
-          )}
-          {comments?.data.list.length === 0 && (
-            <div className="w-full h-[30vh] mx-auto flex justify-center items-center">
-              <p className="text-sm text-slate-400">No comment found</p>
-            </div>
-          )}
-          {comments?.data.list.map((message, index) => (
-            <div
-              key={index}
-              className={`flex flex-col w-full ${
-                message.sender === "customer" ? "items-end" : "items-start"
-              }`}
-            >
-              <div
-                className={`w-fit bg-white p-2 ${
-                  message.sender === "customer"
-                    ? "self-end rounded-tl-lg rounded-tr-none"
-                    : "self-start rounded-tl-none rounded-tr-lg"
-                } rounded-b-lg`}
-              >
-                <div className="font-semibold text-xs">
-                  {message.sender === "customer" ? "Customer" : "Agent"}
-                </div>
-                <div className="text-sm">{message.content}</div>
-                {message.attachments.length > 0 && (
-                  <>
-                    <Divider />
-                    <div className="space-y-1 mt-1">
-                      {message.attachments.map((attachment) => (
-                        <div
-                          key={attachment.id}
-                          className="flex justify-start items-center p-1 space-x-2"
-                        >
-                          <p className="text-xs text-slate-600">
-                            {attachment.name}
-                          </p>
-                          <p className="text-[9px] text-slate-400">
-                            {attachment.size} Kb
-                          </p>
-                          <div
-                            onClick={() => {
-                              setSelectedAttachment(attachment.id);
-                              onOpenAttachment(attachment.id);
-                            }}
-                            role="button"
-                            className="text-success-600 text-xs font-semibold"
-                          >
-                            View
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-                <div className="text-xs text-slate-400">
-                  {DateTime.fromISO(
-                    message.createdAt ?? DateTime.now().toString(),
-                  )
-                    .toLocal()
-                    .toFormat("dd MMM yyyy, HH:mm")}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <input
-          accept="image/*,application/pdf, video/*"
-          multiple
-          type="file"
-          className="hidden"
-          ref={fileInputRef}
-          onChange={handleFileChange}
-        />
-        <form onSubmit={onSubmit}>
-          <div className="p-2 bg-transparent rounded-md">
-            <Input
-              type="text"
-              variant="flat"
-              radius="sm"
-              placeholder="Type your message here"
-              className="w-full"
-              classNames={{ inputWrapper: "bg-white focused:bg-white" }}
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              endContent={
-                <div className="flex items-center space-x-2">
-                  <Button
-                    onPress={() => fileInputRef.current?.click()}
-                    isIconOnly
-                    className="bg-transparent text-slate-400"
-                  >
-                    <AiOutlineFileAdd />
-                  </Button>
-                  <Button
-                    isIconOnly
-                    className="bg-transparent text-slate-400"
-                    type="submit"
-                  >
-                    <AiOutlineSend />
-                  </Button>
-                </div>
-              }
-            />
-          </div>
-        </form>
-        {fileList.length > 0 && (
-          <div className="space-y-1 px-4 mb-2">
-            {fileList.map((item, index) => (
-              <div key={index} className="flex items-center space-x-1">
-                <div className="text-xs font-semibold">{item.fileName}</div>
-                <div className="text-xs text-default-500">({item.size}Kb)</div>
-                {item.isUploaded ? (
-                  <div
-                    role="button"
-                    onClick={() => {
-                      onDeleteItem(index);
-                    }}
-                  >
-                    <HiTrash className="text-red-500" />
+              {comment.map((message, index) => (
+                <div
+                  key={index}
+                  className={`flex flex-col ${message.sender === "customer" ? "items-end" : "items-start"}`}
+                >
+                  <div className="text-xs text-gray-400 mb-0.5">
+                    {DateTime.fromISO(
+                      message.createdAt ?? DateTime.now().toString(),
+                    )
+                      .toLocal()
+                      .toFormat("dd LLL yyyy, HH:mm")}
                   </div>
-                ) : (
-                  <div className="text-xs text-default-500">Uploading...</div>
-                )}
+                  <div
+                    className={`max-w-[80%] border border-gray-500 p-2 rounded-lg ${message.sender === "customer" ? "bg-primary text-white" : "bg-white text-slate-800"}`}
+                  >
+                    <div>{renderMessage(message.content)}</div>
+                    {message.attachments.length > 0 && (
+                      <>
+                        <Divider className="my-1" />
+                        <div className="space-y-1 mt-1">
+                          {message.attachments.map((attachment) => (
+                            <div
+                              key={attachment.id}
+                              className="flex items-center space-x-2"
+                            >
+                              <p className="text-xs">{attachment.name}</p>
+                              <p className="text-[10px] opacity-70">
+                                {attachment.size} Kb
+                              </p>
+                              <button
+                                type="button"
+                                onClick={() => {
+                                  setSelectedAttachment(attachment.id);
+                                  onOpenAttachment(attachment.id);
+                                }}
+                                className="text-xs text-success-400 font-semibold"
+                              >
+                                View
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Sticky input at bottom */}
+          <div className="bg-slate-700 p-2 border-t border-gray-600">
+            {" "}
+            <form onSubmit={onSubmit}>
+              <Textarea
+                type="text"
+                variant="flat"
+                radius="sm"
+                placeholder="Type your message here"
+                className="w-full"
+                classNames={{ inputWrapper: "bg-white focused:bg-white" }}
+                value={inputMessage}
+                onChange={(e) => {
+                  setInputMessage(e.target.value);
+                  setValue("comment", e.target.value);
+                }}
+                endContent={
+                  <>
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        aria-label="emoji"
+                        isIconOnly
+                        variant="bordered"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setShowEmojiPicker((prev) => !prev);
+                        }}
+                        className="cursor-pointer border-primary"
+                      >
+                        😊
+                      </Button>
+                      <Button
+                        aria-label="attachment"
+                        isIconOnly
+                        variant="bordered"
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          fileInputRef.current?.click();
+                        }}
+                        className="cursor-pointer border-primary"
+                      >
+                        <RiAttachment2 size={20} className="text-primary" />
+                      </Button>
+
+                      <Button
+                        aria-label="send"
+                        isIconOnly
+                        type="submit"
+                        className="cursor-pointer bg-primary"
+                      >
+                        <RiSendPlane2Line size={20} className="text-white" />
+                      </Button>
+                    </div>
+                    {showEmojiPicker && (
+                      <div className="absolute bottom-14 right-0 z-50">
+                        <EmojiPicker onEmojiSelect={addEmoji} />
+                      </div>
+                    )}
+                  </>
+                }
+              />
+            </form>
+            {fileList.length > 0 && (
+              <div className="space-y-1 px-2 pt-2">
+                {fileList.map((item, index) => (
+                  <div key={index} className="flex items-center space-x-2">
+                    <p className="text-xs font-semibold">{item.fileName}</p>
+                    <p className="text-xs text-default-500">({item.size}Kb)</p>
+                    {item.isUploaded ? (
+                      <button onClick={() => onDeleteItem(index)} type="button">
+                        <HiTrash className="text-red-500" />
+                      </button>
+                    ) : (
+                      <p className="text-xs text-default-500">Uploading...</p>
+                    )}
+                  </div>
+                ))}
               </div>
-            ))}
+            )}
           </div>
-        )}
+        </div>
       </div>
       <ImageViewModal
         isOpen={open}

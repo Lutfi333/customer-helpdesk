@@ -165,10 +165,10 @@ export default function TicketInfo(props: { id: string }) {
           <p>{detail?.data.subject}</p>
         </div>
 
-        <div>
+        {/* <div>
           <p className="text-slate-400 text-xs">Project</p>
           <p>{detail?.data.project.name}</p>
-        </div>
+        </div> */}
 
         <div>
           <p className="text-slate-400 text-xs">Description</p>
