@@ -1,5 +1,5 @@
 "use client";
-import { COMPANY_DATA } from "@/constants/auth";
+import { COMPANY_DATA, COMPANY_COLOR } from "@/constants/auth";
 import Cookie from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 import { FaRegUser } from "react-icons/fa6";
@@ -19,7 +19,7 @@ export default function LeftSidebar() {
 
   const user = useMemo(() => data?.data, [data]);
 
-  // const companyLogo = JSON.parse(Cookie.get(COMPANY_DATA) as string);
+  const companyLogo = JSON.parse(Cookie.get(COMPANY_DATA) as string);
 
   const activeMenu = (path: string) => {
     if (pathname === path) return true;
@@ -43,9 +43,9 @@ export default function LeftSidebar() {
             width={150}
             alt="swo logo"
             src={
-              // companyLogo.logo
-              //   ? companyLogo.logo.url
-              "/assets/solutionlabs-logo.png"
+              companyLogo.logo
+                ? companyLogo.logo.url
+                : "/assets/solutionlabs-logo.png"
             }
             className="w-auto h-auto max-w-full max-h-full object-contain"
           />

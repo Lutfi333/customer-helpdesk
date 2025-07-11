@@ -17,6 +17,7 @@ import toast from "react-hot-toast";
 import Link from "next/link";
 import { ResponseLogin } from "@/services/auth/types";
 import { useLogin } from "@/services/auth";
+import Cookies from "js-cookie";
 
 type Form = {
   email: string;
@@ -44,8 +45,8 @@ export default function LoginCard() {
   const { mutate, isPending } = useLogin();
 
   const onSubmit = handleSubmit((data) => {
-    // const accessKey = JSON.parse(Cookie.get(COMPANY_DATA) as string).accessKey;
-    const accessKey = "6dee01d9-0de0-4cd7-8907-caa5264be1a4";
+    const accessKey = JSON.parse(Cookie.get(COMPANY_DATA) as string).accessKey;
+    // const accessKey = "6dee01d9-0de0-4cd7-8907-caa5264be1a4";
 
     mutate(
       {

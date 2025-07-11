@@ -6,16 +6,16 @@ import Cookie from "js-cookie";
 import { COMPANY_DATA } from "@/constants/auth";
 
 export default function LoginPage() {
-  // const companyLogo = JSON.parse(Cookie.get(COMPANY_DATA) as string);
+  const companyLogo = JSON.parse(Cookie.get(COMPANY_DATA) as string);
   return (
     <div className="mx-auto w-screen h-full bg-[#f8f5f5]">
       <div className="z-20 h-full flex flex-col items-center justify-center">
         <div className="flex flex-col items-center mb-6">
           <Image
             src={
-              // companyLogo.logo
-              //   ? companyLogo.logo.url
-              "/assets/logo-solutionlabs.png"
+              companyLogo.logo
+                ? companyLogo.logo.url
+                : "/assets/logo-solutionlabs.png"
             }
             width={200}
             height={200}

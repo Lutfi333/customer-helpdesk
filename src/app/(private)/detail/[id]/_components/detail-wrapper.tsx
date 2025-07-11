@@ -73,8 +73,10 @@ export default function DetailWrapper(props: { id: string }) {
     return Cookies.get(COMPANY_SUBDOMAIN);
   }, []);
 
+  const subdomain = domain?.split(".")[0];
+
   const { data: company, isFetching: isFetchingCompany } =
-    useDetailCompany(domain);
+    useDetailCompany(subdomain);
 
   const { mutate: submitComment, isPending } = useSubmitComment();
 
@@ -288,11 +290,11 @@ export default function DetailWrapper(props: { id: string }) {
       <div className="w-full rounded-md shadow-xl bg-white">
         <div className="flex items-center justify-between m-2">
           <div className="flex items-center space-x-2">
-            {/* <p>{company?.data.logo.url}</p> */}
+            {/* <p>{company?.data?.logo.url}</p> */}
             <div className="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex items-center justify-center">
               {!isFetchingCompany && (
                 <Image
-                  // src={company?.data.logo.url}
+                  src={company?.data?.logo.url}
                   alt="company logo"
                   height={50}
                   width={50}
@@ -300,7 +302,7 @@ export default function DetailWrapper(props: { id: string }) {
                 />
               )}
             </div>
-            {/* <p>{company?.data.name}</p> */}
+            <p>{company?.data?.name}</p>
           </div>
         </div>
         <div className="relative rounded-md h-[560px] bg-slate-700 overflow-auto">

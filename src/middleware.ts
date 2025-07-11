@@ -14,51 +14,51 @@ export const config = {
 const excludedPaths = ["/error", "/not-found"];
 
 export async function middleware(request: NextRequest) {
-  // if (excludedPaths.includes(request.nextUrl.pathname)) {
+  if (excludedPaths.includes(request.nextUrl.pathname)) {
   return NextResponse.next();
-  //   }
-  //   const host = request.headers.get("host");
-  //   const originalUrl = host?.split(":")[0];
+    }
+    const host = request.headers.get("host");
+    const originalUrl = host?.split(".")[0];
 
-  //   const cookieToken = request.cookies.get(AUTH_KEY);
-  //   const env = process.env.NEXT_PUBLIC_BASE_URL;
-  //   const apiUrl = `${env}/customer/company/detail-by-domain/${originalUrl}`;
-  //   // const apiUrl = `${env}/customer/company/detail-by-domain/sl-support.ticket-demo.solutionlab.id/`;
+    const cookieToken = request.cookies.get(AUTH_KEY);
+    const env = process.env.NEXT_PUBLIC_BASE_URL;
+    const apiUrl = `${env}/customer/company/detail-by-domain/${originalUrl}`;
+    // const apiUrl = `${env}/customer/company/detail-by-domain/sl-support.ticket-demo.solutionlab.id/`;
 
-  //   try {
-  //     const response = await fetch(apiUrl);
-  //     const data = await response.json();
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
 
-  //     if (data.status === 200) {
-  //       const color = data.data.settings.colorMode.light.primary;
-  //       const domain = data.data.settings.domain.fullUrl;
+      if (data.status === 200) {
+        const color = data.data.settings.colorMode.light.primary;
+        const domain = data.data.settings.domain.fullUrl;
 
-  //       const res = NextResponse.next();
-  //       setCookies(res, color, domain, data.data);
+        const res = NextResponse.next();
+        setCookies(res, color, domain, data.data);
 
-  //       if (!cookieToken) {
-  //         if (request.nextUrl.pathname == "/login") {
-  //           setCookies(res, color, domain, data.data);
-  //           return res;
-  //         }
-  //         return redirectWithCookies(
-  //           res,
-  //           "/login",
-  //           color,
-  //           domain,
-  //           data.data,
-  //           request.url,
-  //         );
-  //       }
+        if (!cookieToken) {
+          if (request.nextUrl.pathname == "/login") {
+            setCookies(res, color, domain, data.data);
+            return res;
+          }
+          return redirectWithCookies(
+            res,
+            "/login",
+            color,
+            domain,
+            data.data,
+            request.url,
+          );
+        }
 
-  //       return res;
-  //     } else {
-  //       // return handleError("/not-found", request.url);
-  //     }
-  //   } catch (error) {
-  //     console.error("Middleware error:", error);
-  //     return handleError("/error", request.url);
-  //   }
+        return res;
+      } else {
+        // return handleError("/not-found", request.url);
+      }
+    } catch (error) {
+      console.error("Middleware error:", error);
+      return handleError("/error", request.url);
+    }
 }
 
 function setCookies(
