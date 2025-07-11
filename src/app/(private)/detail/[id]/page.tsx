@@ -13,7 +13,7 @@ export default function ChatWithTicketInfo({
   return (
     <div className="flex w-full h-full space-x-4">
       <div className="w-1/2 p-4">
-        <DetailWrapper id={params.id}/>
+        <DetailWrapper id={params.id} />
       </div>
 
       <div className="w-1/2  p-4">

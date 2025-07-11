@@ -1,5 +1,5 @@
 "use client";
-import { COMPANY_DATA } from "@/constants/auth";
+import { COMPANY_DATA, COMPANY_COLOR } from "@/constants/auth";
 import Cookie from "js-cookie";
 import { usePathname, useRouter } from "next/navigation";
 import { FaRegUser } from "react-icons/fa6";
