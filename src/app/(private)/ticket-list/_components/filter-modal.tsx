@@ -121,52 +121,57 @@ function FilterModal(props: FilterModalProps) {
     setStatusList(temp);
   };
 
-   const renderStatus = (status: Status) => {
-  let color: "default" | "primary" | "secondary" | "success" | "warning" | "danger" = "default";
+  const renderStatus = (status: Status) => {
+    let color:
+      | "default"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "danger" = "default";
 
-  switch (status.id) {
-    case "open":
-      color = "success";      
-      break;
-    case "in_progress":
-      color = "secondary";   
-      break;
-    case "resolve":
-      color = "warning";      
-      break;
-    case "close":
-      color = "primary";      
-      break;
-    case "cancel":
-      color = "danger";       
-      break;
-    default:
-      color = "default";      
-  }
+    switch (status.id) {
+      case "open":
+        color = "success";
+        break;
+      case "in_progress":
+        color = "secondary";
+        break;
+      case "resolve":
+        color = "warning";
+        break;
+      case "close":
+        color = "primary";
+        break;
+      case "cancel":
+        color = "danger";
+        break;
+      default:
+        color = "default";
+    }
 
-  return (
-    <Fragment key={status.id}>
-      <Chip
-        aria-label="status"
-        onClick={() => onAddSelectedStatus(status)}
-        endContent={
-          status.selected && (
-            <div className="ml-1 h-4 w-4 rounded-full bg-green-400 flex items-center justify-center">
-              <HiCheck className="h-3 w-3 text-white" />
-            </div>
-          )
-        }
-        className="capitalize cursor-pointer"
-        size="sm"
-        variant="solid"
-        color={color}
-      >
-        {status.name}
-      </Chip>
-    </Fragment>
-  );
-};
-
+    return (
+      <Fragment key={status.id}>
+        <Chip
+          aria-label="status"
+          onClick={() => onAddSelectedStatus(status)}
+          endContent={
+            status.selected && (
+              <div className="ml-1 h-4 w-4 rounded-full bg-green-400 flex items-center justify-center">
+                <HiCheck className="h-3 w-3 text-white" />
+              </div>
+            )
+          }
+          className="capitalize cursor-pointer"
+          size="sm"
+          variant="solid"
+          color={color}
+        >
+          {status.name}
+        </Chip>
+      </Fragment>
+    );
+  };
 
   return (
     <Modal
@@ -183,36 +188,36 @@ function FilterModal(props: FilterModalProps) {
             <ModalHeader>Filter</ModalHeader>
             <ModalBody className="space-y-2">
               <form className="space-y-2">
-              <Select
-                    aria-label="sort"
-                    id="sort"
-                    size="sm"
-                    label="Sort by"
-                    className="w-full"
-                    defaultSelectedKeys={[selectedSort || "createdAt"]}
-                    onChange={(e) => {
-                      const target = e.target as HTMLSelectElement;
-                      if (!target.value) {
-                        return;
-                      }
-                      setSelectedSort(target.value);
-                    }}
+                <Select
+                  aria-label="sort"
+                  id="sort"
+                  size="sm"
+                  label="Sort by"
+                  className="w-full"
+                  defaultSelectedKeys={[selectedSort || "createdAt"]}
+                  onChange={(e) => {
+                    const target = e.target as HTMLSelectElement;
+                    if (!target.value) {
+                      return;
+                    }
+                    setSelectedSort(target.value);
+                  }}
+                >
+                  <SelectItem
+                    key="createdAt"
+                    value="createdAt"
+                    isDisabled={selectedSort === "createdAt"} // Disable if already selected
                   >
-                    <SelectItem
-                      key="createdAt"
-                      value="createdAt"
-                      isDisabled={selectedSort === "createdAt"} // Disable if already selected
-                    >
-                      Date Created
-                    </SelectItem>
-                    <SelectItem
-                      key="updatedAt"
-                      value="updatedAt"
-                      isDisabled={selectedSort === "updatedAt"} // Disable if already selected
-                    >
-                      Last Modified
-                    </SelectItem>
-                  </Select>
+                    Date Created
+                  </SelectItem>
+                  <SelectItem
+                    key="updatedAt"
+                    value="updatedAt"
+                    isDisabled={selectedSort === "updatedAt"} // Disable if already selected
+                  >
+                    Last Modified
+                  </SelectItem>
+                </Select>
                 <Input
                   id="id"
                   aria-label="search"

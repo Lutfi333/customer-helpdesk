@@ -20,7 +20,7 @@ export default function ResetPasswordPage({
         </div>
         <ResetPasswordInput token={params.token} />
         <footer className="text-center mt-10 text-xs text-gray-500">
-          © 2024 SolutionLab
+          © 2025 Helpdesk
         </footer>
       </div>
     </div>

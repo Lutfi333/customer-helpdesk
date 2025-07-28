@@ -9,11 +9,17 @@ import {
   useUploadAttachment,
 } from "@/services/ticket";
 import { Attachment, ListCommentData } from "@/services/ticket/types";
-import { Button, Divider, Image, Input, Spinner } from "@heroui/react";
+import { Button, Divider, Image, Input, Spinner, Avatar } from "@heroui/react";
 import Cookies from "js-cookie";
 import { DateTime } from "luxon";
 import { useRouter } from "next/navigation";
-import React, { ChangeEvent, useState } from "react";
+import React, {
+  ChangeEvent,
+  useState,
+  useRef,
+  useEffect,
+  useMemo,
+} from "react";
 import toast from "react-hot-toast";
 import { AiOutlineFileAdd, AiOutlineSend } from "react-icons/ai";
 import { HiArrowUp, HiOutlineArrowCircleLeft, HiTrash } from "react-icons/hi";
@@ -26,6 +32,7 @@ import {
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
 import { Textarea } from "@heroui/react";
+import { useTicketDetail } from "@/services/ticket";
 
 type FileList = {
   url: string;
@@ -37,6 +44,8 @@ type FileList = {
 };
 
 export default function DetailWrapper(props: { id: string }) {
+  const { data: detailTicket } = useTicketDetail(props.id);
+
   const LIMIT_COMMENT = 4;
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -177,14 +186,10 @@ export default function DetailWrapper(props: { id: string }) {
               ),
             );
           },
-          onError: (e) => {
-            toast.error(e.data.message);
-          },
         });
       }
     });
   };
-
   const onDeleteItem = (index: number) => {
     var list = [...fileList];
     list.splice(index, 1);
@@ -257,14 +262,22 @@ export default function DetailWrapper(props: { id: string }) {
 
   const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // if (!detailTicket?.data || detailTicket.data.status !== "open") {
+    //   toast.error("Ticket sudah ditutup. Anda tidak dapat mengirim komentar.");
+    //   return;
+    // }
+
     if (!inputMessage.trim()) {
       toast.error("Comment cannot be empty");
       return;
     }
+
     var arr: string[] = [];
     if (fileList.length > 0) {
       arr = fileList.map((item) => item.id);
     }
+
     onSubmitComment(arr);
   };
 
@@ -288,8 +301,15 @@ export default function DetailWrapper(props: { id: string }) {
       <div className="w-full rounded-md shadow-xl bg-white">
         <div className="flex items-center justify-between m-2">
           <div className="flex items-center space-x-2">
-            {/* <p>{company?.data.logo.url}</p> */}
-            <div className="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex items-center justify-center">
+            <Avatar
+              // src={user?.data?.companyProduct?.image ?? ""}
+              className="text-gray-400 transition-transform"
+            />
+            <p className="text-sm font-semibold text-slate-700">
+              {company?.data?.name ?? "Agent"}
+            </p>
+
+            {/* <div className="w-10 h-10 rounded-full bg-slate-400 overflow-hidden flex items-center justify-center">
               {!isFetchingCompany && (
                 <Image
                   // src={company?.data.logo.url}
@@ -299,7 +319,7 @@ export default function DetailWrapper(props: { id: string }) {
                   className="w-full h-full object-contain aspect-square"
                 />
               )}
-            </div>
+            </div> */}
             {/* <p>{company?.data.name}</p> */}
           </div>
         </div>
@@ -379,96 +399,120 @@ export default function DetailWrapper(props: { id: string }) {
               ))}
             </div>
           )}
-
-          {/* Sticky input at bottom */}
-          <div className="bg-slate-700 p-2 border-t border-gray-600">
-            {" "}
-            <form onSubmit={onSubmit}>
-              <Textarea
-                type="text"
-                variant="flat"
-                radius="sm"
-                placeholder="Type your message here"
-                className="w-full"
-                classNames={{ inputWrapper: "bg-white focused:bg-white" }}
-                value={inputMessage}
-                onChange={(e) => {
-                  setInputMessage(e.target.value);
-                  setValue("comment", e.target.value);
-                }}
-                endContent={
-                  <>
-                    <div className="flex items-center space-x-2">
-                      <Button
-                        aria-label="emoji"
-                        isIconOnly
-                        variant="bordered"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setShowEmojiPicker((prev) => !prev);
-                        }}
-                        className="cursor-pointer border-primary"
-                      >
-                        😊
-                      </Button>
-                      <Button
-                        aria-label="attachment"
-                        isIconOnly
-                        variant="bordered"
-                        onClick={(event) => {
-                          event.stopPropagation();
-                          fileInputRef.current?.click();
-                        }}
-                        className="cursor-pointer border-primary"
-                      >
-                        <RiAttachment2 size={20} className="text-primary" />
-                      </Button>
-
-                      <Button
-                        aria-label="send"
-                        isIconOnly
-                        type="submit"
-                        className="cursor-pointer bg-primary"
-                      >
-                        <RiSendPlane2Line size={20} className="text-white" />
-                      </Button>
-                    </div>
-                    {showEmojiPicker && (
-                      <div className="absolute bottom-14 right-0 z-50">
-                        <EmojiPicker onEmojiSelect={addEmoji} />
-                      </div>
-                    )}
-                  </>
-                }
+          {detailTicket?.data.status !== "closed" ? (
+            <div className="sticky bg-slate-700 bottom-0 flex flex-col gap-4 mt-4">
+              <input
+                accept="image/*,application/pdf, video/*"
+                multiple
+                type="file"
+                className="hidden"
+                ref={fileInputRef}
+                onChange={handleFileChange}
               />
-            </form>
-            {fileList.length > 0 && (
-              <div className="space-y-1 px-2 pt-2">
-                {fileList.map((item, index) => (
-                  <div key={index} className="flex items-center space-x-2">
-                    <p className="text-xs font-semibold">{item.fileName}</p>
-                    <p className="text-xs text-default-500">({item.size}Kb)</p>
-                    {item.isUploaded ? (
-                      <button onClick={() => onDeleteItem(index)} type="button">
-                        <HiTrash className="text-red-500" />
-                      </button>
-                    ) : (
-                      <p className="text-xs text-default-500">Uploading...</p>
-                    )}
+              <div className="bg-slate-700 p-2 border-t border-gray-600">
+                <form onSubmit={onSubmit}>
+                  <Textarea
+                    type="text"
+                    variant="flat"
+                    radius="sm"
+                    placeholder="Type your message here"
+                    className="w-full"
+                    classNames={{ inputWrapper: "bg-white focused:bg-white" }}
+                    value={inputMessage}
+                    onChange={(e) => {
+                      setInputMessage(e.target.value);
+                      setValue("comment", e.target.value);
+                    }}
+                    endContent={
+                      <>
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            aria-label="emoji"
+                            isIconOnly
+                            variant="bordered"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              setShowEmojiPicker((prev) => !prev);
+                            }}
+                            className="cursor-pointer border-primary"
+                          >
+                            😊
+                          </Button>
+                          <Button
+                            aria-label="attachment"
+                            isIconOnly
+                            variant="bordered"
+                            onClick={(event) => {
+                              event.stopPropagation();
+                              fileInputRef.current?.click();
+                            }}
+                            className="cursor-pointer border-primary"
+                          >
+                            <RiAttachment2 size={20} className="text-primary" />
+                          </Button>
+
+                          <Button
+                            aria-label="send"
+                            isIconOnly
+                            type="submit"
+                            className="cursor-pointer bg-primary"
+                          >
+                            <RiSendPlane2Line
+                              size={20}
+                              className="text-white"
+                            />
+                          </Button>
+                        </div>
+                        {showEmojiPicker && (
+                          <div className="absolute bottom-14 right-0 z-50">
+                            <EmojiPicker onEmojiSelect={addEmoji} />
+                          </div>
+                        )}
+                      </>
+                    }
+                  />
+                </form>
+
+                {fileList.length > 0 && (
+                  <div className="space-y-1 px-2 pt-2">
+                    {fileList.map((item, index) => (
+                      <div key={index} className="flex items-center space-x-2">
+                        <p className="text-xs font-semibold">{item.fileName}</p>
+                        <p className="text-xs text-default-500">
+                          ({item.size}Kb)
+                        </p>
+                        {item.isUploaded ? (
+                          <button
+                            onClick={() => onDeleteItem(index)}
+                            type="button"
+                          >
+                            <HiTrash className="text-red-500" />
+                          </button>
+                        ) : (
+                          <p className="text-xs text-default-500">
+                            Uploading...
+                          </p>
+                        )}
+                      </div>
+                    ))}
                   </div>
-                ))}
+                )}
               </div>
-            )}
-          </div>
+            </div>
+          ) : (
+            <div className="sticky bottom-0 bg-slate-700 p-3 text-center text-white text-sm italic">
+              Ticket sudah ditutup. Anda tidak dapat mengirim komentar baru.
+            </div>
+          )}
         </div>
+        <ImageViewModal
+          isOpen={open}
+          data={attachment}
+          onClose={() => {
+            setOpen(false);
+          }}
+        />
       </div>
-      <ImageViewModal
-        isOpen={open}
-        data={attachment}
-        onClose={() => {
-          setOpen(false);
-        }}
-      />
     </div>
   );
 }

@@ -37,18 +37,12 @@ export default function LeftSidebar() {
       }}
       className="h-screen"
     >
-      <div className="px-4 flex items-center justify-center">
-        <div className="rounded-md mb-5 mt-3">
-          <Image
-            width={150}
-            alt="swo logo"
-            src={
-              // companyLogo.logo
-              //   ? companyLogo.logo.url
-              "/assets/solutionlabs-logo.png"
-            }
-            className="w-auto h-auto max-w-full max-h-full object-contain"
-          />
+      <div className="px-4">
+        <div
+          className="rounded-xl mb-5
+        "
+        >
+          <Image width={120} alt="Helpdesk" src="/assets/logo-helpdesk.png" />
         </div>
       </div>
       <Menu
@@ -58,7 +52,7 @@ export default function LeftSidebar() {
             className: `${active ? "bg-primary" : ""}`;
             return {
               color: active ? "#FBF9F1" : "#64748B",
-              backgroundColor: active ? "var(--primary-color)" : undefined,
+              backgroundColor: active ? "#28a745" : undefined,
               borderRadius: "8px",
               marginBottom: "8px",
               marginTop: "8px",

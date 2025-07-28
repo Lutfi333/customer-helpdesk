@@ -1,3 +1,5 @@
+"use client";
+
 import { Suspense } from "react";
 import VerifyCard from "./_components/verify-card";
 import { Spinner } from "@heroui/react";
