@@ -49,7 +49,7 @@ export default function ResetPasswordInput(props: { token: string }) {
           <div className="text-center">
             <p className="text-lg font-bold mt-2">Password Recovery</p>
             <p className="text-sm text-slate-500 font-normal">
-              Enter the new password you use for Desk Ticketing dashboard
+              Enter the new password you use for Helpdesk dashboard
             </p>
           </div>
         </div>
@@ -157,7 +157,7 @@ export default function ResetPasswordInput(props: { token: string }) {
             isDisabled={isPending}
             isLoading={isPending}
             disabled={isPending}
-            className="w-full bg-primary text-white hover:bg-gray-600"
+            className="w-full bg-#28a745 text-white hover:bg-gray-600"
             data-testid="submit"
           >
             Submit

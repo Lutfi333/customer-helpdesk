@@ -1,16 +1,15 @@
 import { P, R } from "@/types/response";
 
 export type PaginationParams = {
-    page: Number,
-    limit: Number,
-    sort?: string,
-    dir?: string,
-    status?: string,
-    subject?: string,
-    code?: string,
-    customerID?: string,
-  
-}
+  page: Number;
+  limit: Number;
+  sort?: string;
+  dir?: string;
+  status?: string;
+  subject?: string;
+  code?: string;
+  customerID?: string;
+};
 
 /**
  * ResponseListTicket
@@ -20,6 +19,7 @@ export type ResponseListTicket = P<ListTicketDatum>;
 
 export interface ListTicketDatum {
   id: string;
+  name: string;
   company: Company;
   product: Company;
   customer: Customer;
@@ -44,8 +44,8 @@ export interface Company {
 }
 
 export interface Category {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface LogTime {
@@ -64,44 +64,45 @@ export interface Validation {}
 export type ResponseDetailTicket = R<DetailTicketData>;
 
 export interface DetailTicketData {
-  id:          string;
-  company:     Company;
-  product:     Company;
-  customer:    Customer;
-  category:    Category;
-  subject:     string;
-  content:     string;
+  id: string;
+  name: string;
+  company: Company;
+  product: Company;
+  customer: Customer;
+  category: Category;
+  subject: string;
+  content: string;
   project: Company;
   attachments: Attachment[];
-  logTime:     LogTime;
-  priority:    string;
-  status:      string;
-  createdAt:   string;
-  updatedAt:   string;
-  closedAt:    string | null;
-  code:        string;
+  logTime: LogTime;
+  priority: string;
+  status: string;
+  createdAt: string;
+  updatedAt: string;
+  closedAt: string | null;
+  code: string;
 }
 
 export interface Category {
-  id: string
-  name: string
+  id: string;
+  name: string;
 }
 
 export interface Attachment {
-  id:   string;
+  id: string;
   name: string;
   size: number;
-  url:  string;
-  type:  string;
+  url: string;
+  type: string;
 }
 
 export interface Company {
-  id:   string;
+  id: string;
   name: string;
 }
 
 export interface Customer {
-  id:   string;
+  id: string;
   name: string;
   email: string;
 }
@@ -161,20 +162,19 @@ export interface Data {
  * ResponseUploadAttachment
  */
 
-
-export type ResponseUploadAttachment = R<UploadAttachmentData>
+export type ResponseUploadAttachment = R<UploadAttachmentData>;
 
 export interface UploadAttachmentData {
-  id:          string;
-  company:     Company;
-  name:        string;
-  provider:    string;
+  id: string;
+  company: Company;
+  name: string;
+  provider: string;
   providerKey: string;
-  type:        string;
-  size:        number;
-  url:         string;
-  createdAt:   Date;
-  updatedAt:   Date;
+  type: string;
+  size: number;
+  url: string;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 /**

@@ -32,7 +32,7 @@ export default function EmailRecoveryInput() {
   });
 
   return (
-    (<Fragment>
+    <Fragment>
       {showSuccess && <EmailRecoverySent />}
       {!showSuccess && (
         <Card className="w-4/12 rounded-2xl shadow-lg p-5">
@@ -41,7 +41,7 @@ export default function EmailRecoveryInput() {
               <div className="text-center">
                 <p className="text-lg font-bold mt-2">Password Recovery</p>
                 <p className="text-sm text-slate-500 font-normal">
-                  Enter the email you use for Desk Ticketing dashboard
+                  Enter the email you use for Helpdesk dashboard
                 </p>
               </div>
             </div>
@@ -105,6 +105,6 @@ export default function EmailRecoveryInput() {
           </CardBody>
         </Card>
       )}
-    </Fragment>)
+    </Fragment>
   );
 }

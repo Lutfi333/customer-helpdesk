@@ -114,35 +114,36 @@ export default function TicketInfo(props: { id: string }) {
   };
 
   const renderStatus = useCallback((status: string) => {
-    let color: "default" | "primary" | "secondary" | "success" | "warning" | "danger" = "default";
-  
+    let color:
+      | "default"
+      | "primary"
+      | "secondary"
+      | "success"
+      | "warning"
+      | "danger" = "default";
+
     switch (status) {
       case "open":
-        color = "primary";      
+        color = "primary";
         break;
       case "in_progress":
-        color = "secondary";   
+        color = "secondary";
         break;
       case "close":
-        color = "success";      
+        color = "success";
         break;
       case "resolve":
-        color = "warning";      
+        color = "warning";
         break;
       case "cancel":
-        color = "danger";       
+        color = "danger";
         break;
       default:
-        color = "default";     
+        color = "default";
     }
-  
+
     return (
-      <Chip
-        color={color}
-        className="capitalize"
-        size="sm"
-        variant="solid"
-      >
+      <Chip color={color} className="capitalize" size="sm" variant="solid">
         {status.replace("_", " ")}
       </Chip>
     );
@@ -230,50 +231,29 @@ export default function TicketInfo(props: { id: string }) {
           ))}
       </div>
       <div className="w-full flex justify-center pt-5">
-        {detail?.data.status === "closed" ? (
+        {detail?.data.status === "open" ? (
           <Button
-            onPress={() => {
-              onReopenTicket();
-            }}
-            className="bg-green-400 text-white rounded-md"
-            isLoading={isReopenPending}
+            isDisabled={detail?.data.logTime.status === "running"}
+            disabled={detail?.data.logTime.status === "running"}
+            isLoading={isCancelPending}
+            onPress={onCancelTicket}
+            className="bg-red-400 text-white rounded-md"
           >
-            Re Open
+            Cancel
           </Button>
-        ) : (
-          <>
-            {detail?.data.status === "open" ? (
-              <Button
-                isDisabled={detail?.data.logTime.status == "running"}
-                disabled={detail?.data.logTime.status == "running"}
-                isLoading={isCancelPending}
-                onPress={() => {
-                  onCancelTicket();
-                }}
-                className="bg-red-400 text-white rounded-md"
-              >
-                Cancel
-              </Button>
-            ) : (
-              <Fragment>
-                {detail?.data.status !== "closed" && (
-                  <Button
-                    isDisabled={detail?.data.logTime.status == "running"}
-                    disabled={detail?.data.logTime.status == "running"}
-                    isLoading={isClosePending}
-                    onPress={() => {
-                      onCloseTicket();
-                    }}
-                    className="bg-red-400 text-white rounded-md"
-                  >
-                    Close Issue
-                  </Button>
-                )}
-              </Fragment>
-            )}
-          </>
-        )}
+        ) : detail?.data.status !== "closed" ? (
+          <Button
+            isDisabled={detail?.data.logTime.status === "running"}
+            disabled={detail?.data.logTime.status === "running"}
+            isLoading={isClosePending}
+            onPress={onCloseTicket}
+            className="bg-red-400 text-white rounded-md"
+          >
+            Close Issue
+          </Button>
+        ) : null}
       </div>
+
       <ImageViewModal
         isOpen={open}
         data={attachment}

@@ -1,7 +1,14 @@
 "use client";
 import { useState } from "react";
 
-import { Card, CardHeader, CardBody, Button, Input, Image } from "@heroui/react";
+import {
+  Card,
+  CardHeader,
+  CardBody,
+  Button,
+  Input,
+  Image,
+} from "@heroui/react";
 import { Controller, useForm } from "react-hook-form";
 import { HiOutlineEye, HiOutlineEyeOff } from "react-icons/hi";
 import Link from "next/link";
@@ -35,34 +42,33 @@ export default function RegisterCard() {
     setIsVisibleConfirmPass(!isVisibleConfirmPass);
   };
 
-  const { mutate, isPending } = useRegister(); 
+  const { mutate, isPending } = useRegister();
 
   const onSubmit = handleSubmit((data) => {
-    mutate({
-      name: data.fullname,
-      email: data.email,
-      password: data.password,
-      accessKey: Env().API_ACCESS_KEY,
-    }, {
-      onSuccess: () => {
-        toast.success("Register success");
-        router.replace("/email-send");
+    mutate(
+      {
+        name: data.fullname,
+        email: data.email,
+        password: data.password,
+        accessKey: Env().API_ACCESS_KEY,
       },
-      onError: (e) => {
-        toast.error(e.data.message);
+      {
+        onSuccess: () => {
+          toast.success("Register success");
+          router.replace("/email-send");
+        },
+        onError: (e) => {
+          toast.error(e.data.message);
+        },
       },
-    });
+    );
   });
 
   return (
-    (<Card className="w-5/12 rounded-lg p-5">
+    <Card className="w-5/12 rounded-lg p-5">
       <CardHeader className="justify-between">
         <div className="flex flex-col justify-center items-center w-full">
-          <Image
-            width={200}
-            alt="Solutionlabs logo"
-            src="/assets/solutionlabs-logo.png"
-          />
+          <Image width={200} alt="Helpdesk" src="/assets/logo-helpdesk.png" />
           <div>
             <p className="text-xs text-default-500">Register</p>
           </div>
@@ -245,6 +251,6 @@ export default function RegisterCard() {
           </Button>
         </form>
       </CardBody>
-    </Card>)
+    </Card>
   );
 }

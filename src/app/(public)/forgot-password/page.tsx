@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import EmailRecoveryInput from "./_components/email-recovery-input";
 import EmailRecoverySent from "./_components/email-recovery-sent";
@@ -9,15 +8,15 @@ export default function ForgotPasswordPage() {
       <div className="z-20 h-full flex flex-col items-center justify-center">
         <div className="flex flex-col items-center mb-6">
           <Image
-            src="/assets/logo-solutionlabs.png"
+            src="/assets/logo-helpdesk.png"
             width={200}
             height={100}
-            alt="SolutionLabs Logo"
+            alt="Helpdesk"
           />
         </div>
         <EmailRecoveryInput />
         <footer className="text-center mt-10 text-xs text-gray-500">
-          © 2024 SolutionLab
+          © 2025 Helpdesk
         </footer>
       </div>
     </div>

@@ -15,17 +15,17 @@ export default function LoginPage() {
             src={
               // companyLogo.logo
               //   ? companyLogo.logo.url
-              "/assets/logo-solutionlabs.png"
+              "/assets/logo-helpdesk.png"
             }
             width={200}
             height={200}
             className="w-auto h-auto object-contain"
-            alt="SolutionLabs Logo h-auto w-auto"
+            alt="Helpdesk h-auto w-auto"
           />
         </div>
         <LoginCard />
         <footer className="text-center mt-10 text-xs text-gray-500">
-          © 2024 SolutionLab
+          © 2025 Helpdesk
         </footer>
       </div>
     </div>

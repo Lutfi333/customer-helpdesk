@@ -33,7 +33,7 @@ export default function NavbarTop() {
                       </p>
                     </div>
                     <Avatar
-                      src={user?.data?.companyProduct?.image ?? ""}
+                      // src={user?.data?.companyProduct?.image ?? ""}
                       className="text-gray-400 transition-transform"
                     />
                   </>
